@@ -9,7 +9,7 @@ import java.util.OptionalDouble;
 public class Serie {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long Id;
+    private Long Id;
     @Column(unique = true)
     private String titulo;
     private Integer totalDeTemporadas;
@@ -28,17 +28,37 @@ public class Serie {
         this.titulo = datosSerie.titulo();
         this.totalDeTemporadas = datosSerie.totalDeTemporadas();
         this.evaluacion = OptionalDouble.of(Double.valueOf(datosSerie.evaluacion())).orElse(0);
-        this.poster = datosSerie.posters();
+        this.poster = datosSerie.poster();
         this.genero = Categoria.fromString(datosSerie.genero().split(",")[0].trim());
         this.actores = datosSerie.actores();
         this.sinopsis = datosSerie.sinopsis();
     }
+    @Override
+    public String toString() {
+        return  "genero=" + genero +
+                ", titulo='" + titulo + '\'' +
+                ", totalDeTemporadas=" + totalDeTemporadas +
+                ", evaluacion=" + evaluacion +
+                ", actores='" + actores + '\'' +
+                ", poster='" + poster + '\'' +
+                ", sinopsis='" + sinopsis + '\'' +
+                ", episodios='" + episodios + '\'';
+    }
 
-    public long getId() {
+    public List<Episodio> getEpisodios() {
+        return episodios;
+    }
+
+    public void setEpisodios(List<Episodio> episodios) {
+        episodios.forEach(e -> e.setSerie(this));
+        this.episodios = episodios;
+    }
+
+    public Long getId() {
         return Id;
     }
 
-    public void setId(long id) {
+    public void setId(Long id) {
         Id = id;
     }
 
@@ -98,24 +118,4 @@ public class Serie {
         this.sinopsis = sinopsis;
     }
 
-    @Override
-    public String toString() {
-        return  "genero=" + genero +
-                ", titulo='" + titulo + '\'' +
-                ", totalDeTemporadas=" + totalDeTemporadas +
-                ", evaluacion=" + evaluacion +
-                ", actores='" + actores + '\'' +
-                ", poster='" + poster + '\'' +
-                ", sinopsis='" + sinopsis + '\'' +
-                ", episodios='" + episodios + '\'';
-    }
-
-    public List<Episodio> getEpisodios() {
-        return episodios;
-    }
-
-    public void setEpisodios(List<Episodio> episodios) {
-        episodios.forEach(e -> e.setSerie(this));
-        this.episodios = episodios;
-    }
 }
